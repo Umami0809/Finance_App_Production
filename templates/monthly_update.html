@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>残高修正画面</h1>
+    <hr />
+    <form method="post" action="{{ url_for('monthly_update',bm_id=detail.BalanceManagementID) }}">
+        <!--外部コンテナ用のCSSを適用-->
+        <div class="form"> 
+            <!--コンテナを入れ子構造にする-->
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label>年月：{{ detail.YearMonth }}</label>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label>口座：{{ detail.AssetType }}</label>
+                <br><br>
+            </div>    
+
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label for="MoneyAmount">残高</label>
+                <input type="number" id="MoneyAmount" name="MoneyAmount" value="{{ detail.MoneyAmount }}" required>
+                <br><br>
+            </div>
+
+            <input type="submit" value="更新" class="submit submit-update" />
+        </div>
+    </form>
+
+    <a href="{{url_for('monthly_history')}}"class="other-button other-button-history">戻る</a>
+{% endblock %}

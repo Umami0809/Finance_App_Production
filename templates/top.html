@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>トップ画面</h1>
+    <hr />
+    <div class="top-container">
+        <!-- 各画面へのリンク -->
+        <a href="{{ url_for('history') }}" class="top-button top-button-history">履歴一覧画面</a>
+        <a href="{{ url_for('record') }}" class="top-button top-button-record">登録画面</a>
+        <a href="{{ url_for('cash_draw') }}" class="top-button top-button-cashdraw">現金引出画面</a>
+        <a href="{{url_for('monthly_history')}}"class="top-button top-button-history">月次残高一覧</a>
+        <a href="{{url_for('monthly_record')}}"class="top-button top-button-record">月初残高登録</a>
+        <a href="{{ url_for('inv_balance_record') }}" class="top-button top-button-cashdraw">残高棚卸画面</a>
+    </div>
+{% endblock %}

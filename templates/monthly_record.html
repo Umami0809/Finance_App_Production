@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>月初残高登録画面</h1>
+    <hr />
+    <form onsubmit="registerMonthlyRecord(document.getElementById('YearMonth').value, document.getElementById('AssetType').value, document.getElementById('MoneyAmount').value); return false;">
+        <!--外部コンテナ用のCSSを適用-->
+        <div class="form"> 
+            <!--コンテナを入れ子構造にする-->
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label for="YearMonth">年月</label>
+                <input type="text" id="YearMonth" name="YearMonth" required>
+                <br><br>
+            </div>
+                
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label for="AssetType">口座</label>
+                <input type="text" id="AssetType" name="AssetType" list="AssetType_list" required>
+                <datalist id="AssetType_list">
+                    <option value="常陽銀行"></option>
+                    <option value="千葉興銀"></option>
+                    <option value="政光財布"></option>
+                    <option value="梢財布"></option>
+                    <option value="コジカ"></option>
+                </datalist>
+                <br><br>
+            </div>
+            
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label for="MoneyAmount">残高</label>
+                <input type="number" id="MoneyAmount" name="MoneyAmount" required>
+                <br><br>
+            </div>
+
+            <input type="submit" value="残高新規登録" class="submit submit-record" />
+        </div>
+    </form>
+
+    <a href="{{url_for('top')}}"class="other-button other-button-top">トップ画面へ</a>
+    <a href="{{url_for('monthly_history')}}"class="other-button other-button-history">残高一覧</a>
+{% endblock %}

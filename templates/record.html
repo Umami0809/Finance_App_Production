@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>登録画面</h1>
+    <hr />
+    <form method="post" action="{{ url_for('record') }}">
+        <!--外部コンテナ用のCSSを適用-->
+        <div class="form"> 
+            <!--コンテナを入れ子構造にする-->
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Date">日付</label>
+                <input type="date" id="Date" name="Date" required>
+                <br><br>
+            </div>
+            
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Event">イベント</label>
+                <input type="text" id="Event" name="Event" required>
+                <br><br>
+            </div>
+                
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="TransactionAmount">金額</label>
+                <input type="number" id="TransactionAmount" name="TransactionAmount" required>
+                <br><br>
+            </div>    
+                
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="Income_OutgoType">収入/支出</label>
+                <input type="text" id="Income_OutgoType" name="Income_OutgoType" list="income_outgo_list"required>
+                <datalist id="income_outgo_list">
+                    <option value="収入"></option>
+                    <option value="支出"></option>
+                </datalist>
+                <br><br>
+            </div>
+            
+            <div class="form-group"> 
+                <!-- TransactionItemテーブル -->
+                <label for="Suppliers">取引先</label>
+                <input type="text" id="Suppliers" name="Suppliers" required>
+                <br><br>
+            </div>
+            
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="Category">カテゴリ</label>
+                <input type="text" id="Category" name="Category" list="Category_list"required>
+                <datalist id="Category_list">
+                    <option value="食材費"></option>
+                    <option value="外食費"></option>
+                    <option value="家庭用品"></option>
+                    <option value="光熱費"></option>
+                    <option value="交通費"></option>
+                    <option value="住居費"></option>
+                    <option value="被服費"></option>
+                    <option value="教育費"></option>
+                    <option value="保険料"></option>
+                    <option value="通信費"></option>
+                    <option value="医療費"></option>
+                    <option value="子供関係"></option>
+                    <option value="エンタメ"></option>
+                    <option value="趣味"></option>
+                    <option value="棚卸支出"></option>
+                    <option value="その他雑費"></option>
+                    <option value="不明"></option>
+                    <option value="給与"></option>
+                    <option value="補助金"></option>
+                    <option value="臨時収入"></option>
+                    <option value="棚卸収入"></option>
+                </datalist>
+                <br><br>
+            </div>
+            
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="TransactionItemName">取引品目名</label>
+                <input type="text" id="TransactionItemName" name="TransactionItemName" required>
+                <br><br>
+            </div>    
+                
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="PaymentMethod">決済方法</label>
+                <input type="text" id="PaymentMethod" name="PaymentMethod" list="PaymentMethod_list" required>
+                <datalist id="PaymentMethod_list">
+                    <option value="現金"></option>
+                    <option value="口座取引"></option>
+                    <option value="プリペイドカード"></option>
+                </datalist>
+                <br><br>
+            </div>    
+                
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label for="AssetType">口座</label>
+                <input type="text" id="AssetType" name="AssetType" list="AssetType_list" required>
+                <datalist id="AssetType_list">
+                    <option value="常陽銀行"></option>
+                    <option value="千葉興銀"></option>
+                    <option value="政光財布"></option>
+                    <option value="梢財布"></option>
+                    <option value="コジカ"></option>
+                </datalist>
+                <br><br>
+            </div>
+            
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Memo">メモ</label>
+                <textarea id="Memo" name="Memo" cols="40" row="6"></textarea>
+                <br><br>
+            </div>
+
+            <input type="submit" value="新規登録" class="submit submit-record" />
+        </div>
+    </form>
+
+    <a href="{{url_for('top')}}"class="other-button other-button-top">トップ画面へ</a>
+{% endblock %}

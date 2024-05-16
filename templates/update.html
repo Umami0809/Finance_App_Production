@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>修正画面</h1>
+    <hr />
+    <form method="post" action="{{ url_for('update',td_id=detail.TransactionDetails.TransactionID) }}">
+        <!--外部コンテナ用のCSSを適用-->
+        <div class="form"> 
+            <!--コンテナを入れ子構造にする-->
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Date">日付</label>
+                <input type="date" id="Date" name="Date" value="{{ detail.TransactionDetails.Date }}" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Event">イベント</label>
+                <input type="text" id="Event" name="Event" value="{{ detail.TransactionDetails.Event }}" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="TransactionAmount">金額</label>
+                <input type="number" id="TransactionAmount" name="TransactionAmount" value="{{ detail.TransactionDetails.TransactionAmount }}" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="Income_OutgoType">収入/支出</label>
+                <input type="text" id="Income_OutgoType" name="Income_OutgoType" value="{{ detail.TransactionItem.Income_OutgoType }}" required>
+                <br><br>
+            </div>    
+
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="Suppliers">取引先</label>
+                <input type="text" id="Suppliers" name="Suppliers" value="{{ detail.TransactionItem.Suppliers }}" required>
+                <br><br>
+            </div>    
+
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="Category">カテゴリ</label>
+                <input type="text" id="Category" name="Category" value="{{ detail.TransactionItem.Category }}" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="TransactionItemName">取引品目名</label>
+                <input type="text" id="TransactionItemName" name="TransactionItemName" value="{{ detail.TransactionItem.TransactionItemName }}" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="PaymentMethod">決済方法</label>
+                <input type="text" id="PaymentMethod" name="PaymentMethod" value="{{ detail.TransactionDetails.PaymentMethod }}" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Memo">メモ</label>
+                <textarea id="Memo" name="Memo" cols="40" row="6">{{ detail.TransactionDetails.Memo }}</textarea>
+                <br><br>
+            </div>
+            <input type="submit" value="更新" class="submit submit-update" />
+        </div>
+    </form>
+
+    <a href="{{url_for('history')}}"class="other-button other-button-history">戻る</a>
+{% endblock %}

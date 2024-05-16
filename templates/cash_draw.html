@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>現金引出画面</h1>
+    <hr />
+    <form method="post" action="{{ url_for('cash_draw') }}">
+        <!--外部コンテナ用のCSSを適用-->
+        <div class="form"> 
+             <!--コンテナを入れ子構造にする-->
+             <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Date">日付</label>
+                <input type="date" id="Date" name="Date" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- BalanceManagementテーブル -->
+                <label for="Draw_Sauce">引出元</label>
+                <input type="text" id="Draw_Sauce" name="Draw_Sauce" list="DrawSauce_list" required>
+                <datalist id="DrawSauce_list">
+                    <option value="常陽銀行"></option>
+                    <option value="千葉興銀"></option>
+                    <option value="政光財布"></option>
+                    <option value="梢財布"></option>
+                </datalist>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionItemテーブル -->
+                <label for="Draw_Destination">引出先</label>
+                <input type="text" id="Draw_Destination" name="Draw_Destination" list="DrawDestination_list" required>
+                <datalist id="DrawDestination_list">
+                    <option value="常陽銀行"></option>
+                    <option value="千葉興銀"></option>
+                    <option value="政光財布"></option>
+                    <option value="梢財布"></option>
+                </datalist>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetails & BalanceManagementテーブル -->
+                <label for="Draw_Amount">引出額</label>
+                <input type="number" id="Draw_Amount" name="Draw_Amount" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Commission">手数料</label>
+                <input type="number" id="Commission" name="Commission" required>
+                <br><br>
+            </div>
+
+            <div class="form-group">
+                <!-- TransactionDetailsテーブル -->
+                <label for="Memo">メモ</label>
+                <textarea id="Memo" name="Memo" cols="40" row="6"></textarea>
+                <br><br>
+            </div>
+
+            <input type="submit" value="引出登録" class="submit submit-cashdraw" />
+        </div>
+    </form>
+
+    <a href="{{url_for('top')}}"class="other-button other-button-top">トップ画面へ</a>
+{% endblock %}

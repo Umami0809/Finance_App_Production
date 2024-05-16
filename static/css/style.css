@@ -1,0 +1,289 @@
+/***************************************************/
+/* ベーススタイル */
+/***************************************************/
+body {
+    font-family: Arial, sans-serif; /* 読みやすいフォントを使用 */
+    background-color: #f5f5f5; /* 落ち着いた背景色 */
+    color: #333; /* テキストカラー */
+    margin: 0;
+    padding: 0;
+}
+
+/* ヘッダーと共通要素 */
+h1 {
+    color: #444;
+    text-align: center; /* 中央寄せ */
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ccc; /* 水平線の色 */
+}
+
+/***************************************************/
+/* 一覧画面-テーブルスタイル */
+/***************************************************/
+table {
+    border-collapse: separate;  /*境界線 */
+    width: 95%; /* テーブルサイズ */
+    margin: 0 auto; /* 左右のマージンを自動にして中央寄せ */
+    /*border: 3px double #555;*/ /* 太さと色を設定して外枠を目立たせる */
+    border: none;
+    box-shadow: 0px 4px 8px 0px rgba(1, 133, 126, 0.986); /* シャドウ効果 */
+}
+
+th {
+    background-color: #f2f2f2; /* ヘッダーの背景色 */
+    text-align: center;
+    padding: 0px; /* パディング */
+}
+
+td {
+    padding: 0px;
+    border: 1px solid #555; /* 境界線を目立たせる */
+    border-bottom: 1px solid #ddd; /* 行の境界線 */
+    line-height: 1.5; /* 行間を狭くする */
+}
+
+th,td{
+    font-size: 1vw; /* 画面幅の1%のフォントサイズ */
+}
+
+/* リンクを含むセルの中央寄せ */
+td.link-cell {
+    text-align: center; /* セルを中央寄せ */
+}
+
+tr:hover {
+    background-color: #d8d7d7; /* ホバー時の背景色 */
+}
+
+.summary h2{
+    margin-left: 40px;
+    text-shadow: 1px 2px 4px rgba(1, 133, 126, 0.986); /* テキストに影を付ける */
+}
+
+/***************************************************/
+/* コントロールの標準スタイル */
+/***************************************************/
+/* インプットボックスのスタイル */
+input[type="text"], input[type="number"], input[type="date"], textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px; /* インプットボックスの間に余白 */
+}
+
+/* ボタンのスタイル */
+input[type="submit"] {
+    color: white; /* テキストは白 */
+    border: none; /* 境界線なし */
+    padding: 6px 20px; /* パディング */
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px; /* 角を丸くする */
+    transition: background-color 0.3s; /* ホバー時のトランジション */
+    width: auto;
+}
+
+/* フォームのスタイル */
+form {
+    max-width: 400px; /* フォームの最大幅 */
+    margin: 0 auto; /* 中央寄せ */
+    display: block; /* ブロックを使用 */
+}
+
+/* ラベルのスタイル */
+label {
+    font-weight: bold; /* 強調 */
+    margin-right: 10px; /* ラベルとフィールドの間のスペース */
+    white-space: nowrap;
+}
+/***************************************************/
+/* submitボタンのスタイル */
+/***************************************************/
+.submit-serch {
+    background-color: #429b93;
+}
+
+.submit-record{
+    background-color: rgb(255, 115, 0); 
+}
+
+.submit-cashdraw{
+    background-color: #ffc107; 
+}
+
+.submit-update {
+    background-color: #6c757d;
+}
+
+/* ホバー時の色を設定 */
+
+.submit-serch:hover {
+    background-color: #2f6e69; 
+}
+
+.submit-record:hover {
+    background-color:rgb(190, 87, 2);
+}
+
+.submit-cashdraw:hover {
+    background-color: #e0a800;
+}
+
+.submit-update:hover {
+    background-color: #5a6268;
+}
+
+/***************************************************/
+/* フォーム内の要素をフレックスボックスで配置 */
+/***************************************************/
+
+/* フォーム内のラベルとインプットボックスを横に並べる */
+.form-group {
+    display: flex; /* フレックスボックスを使用 */
+    flex-direction: row; /* 水平方向に並べる */
+    justify-content: center; /* 水平方向に中央寄せ */
+    align-items: center; /* 垂直方向に中央寄せ */
+    gap: 10px; /* ラベルとインプットボックスの間に余白 */
+    margin: 10px; /* コンテナ同士の間隔 */
+}
+
+.form-group-serch {
+    display: flex; /* フレックスボックスを使用 */
+    flex-direction: row; /* 水平方向に並べる */
+    align-items: center; /* 垂直方向に中央寄せ */
+}
+
+/* ラベルのスタイル */
+.form-group label {
+    min-width: 100px; /* ラベルの幅を固定 */
+    text-align: right; /* ラベルを右寄せ */
+    margin-right: 10px; /* ラベルとインプットボックスの間に余白 */
+}
+
+/* インプットボックスのスタイル */
+.form-group input {
+    width: 150px
+}
+
+/***************************************************/
+/* 画面毎のボタンクラスの定義 */
+/***************************************************/
+.top-button {
+    background-color: #4CAF50; /* 緑色 */
+    color: white;
+    text-decoration: none; /* テキストの下線を消す */
+    padding: 10px 20px; /* パディング */
+    border-radius: 5px; /* 角を丸くする */
+    display: inline-block;
+    margin: 10px 0; /* 上下に余白を追加して縦に並べる */
+    width: 200px; /* 幅を100ピクセルに固定 */
+    font-size: 30px; /* フォントサイズを大きく */
+    text-align: center; /* テキストを中央寄せ */
+}
+
+.other-button {
+    background-color: #4CAF50; /* 緑色 */
+    color: white;
+    text-decoration: none; /* テキストの下線を消す */
+    padding: 10px 20px; /* パディング */
+    border-radius: 5px; /* 角を丸くする */
+    /*display: inline-block;*/
+    margin: 10px 0; /* 上下に余白を追加 */
+    margin-right: 10px; /* ボタン同士の間のスペース */
+}
+
+/* topボタン用のスタイル */
+.top-button-history {
+    background-color: #019b9b; /* 青色 */
+}
+
+.top-button-cashdraw {
+    background-color: #ffc107; /* 黄色 */
+}
+
+.top-button-record {
+    background-color:rgb(255, 115, 0);
+}
+
+/* topボタンホバー時のスタイル */
+.top-button-history:hover {
+    background-color: #016970;
+}
+
+.top-button-cashdraw:hover {
+    background-color: #e0a800;
+}
+
+.top-button-record:hover {
+    background-color:rgb(190, 87, 2);
+}
+
+/* otherボタン用のスタイル */
+.other-button-history {
+    background-color: #019b9b; /* 青色 */
+    float: right; /* ボタンを右側に配置 */
+}
+
+.other-button-top {
+    background-color: #28a745; /* 緑色 */
+    float: right; /* ボタンを右側に配置 */
+}
+
+.other-button-record {
+    background-color:rgb(255, 115, 0);
+    float: right; /* ボタンを右側に配置 */
+}
+
+.other-button-update {
+    background-color: #6c757d; /* グレー */
+    padding: 0px 10px; /* パディングを減らして縦方向に小さくする */
+    height: auto; /* 高さを自動にして押しつぶされないようにする */
+    margin: 1px; /* マージンを小さくする */
+    float: center; /* ボタンを中央に配置 */
+}
+
+.other-button-delete {
+    background-color: #dc3545; /* 赤色 */
+    padding: 0px 10px; /* パディングを減らして縦方向に小さくする */
+    height: auto; /* 高さを自動にして押しつぶされないようにする */
+    margin: 1px; /* マージンを小さくする */
+    float: center; /* ボタンを中央に配置 */
+}
+
+/* otherボタンホバー時のスタイル */
+.other-button-history:hover {
+    background-color: #016d6d;
+}
+
+.other-button-top:hover {
+    background-color: #45a049; /* ホバー時の色 */
+}
+
+.other-button-record:hover {
+    background-color:rgb(190, 87, 2);
+}
+
+.other-button-update:hover {
+    background-color: #5a6268;
+}
+
+.other-button-delete:hover {
+    background-color: #c82333;
+}
+
+/***************************************************/
+/* トップ画面のスタイル */
+/***************************************************/
+.top-container {
+    display: flex; /* フレックスボックスを使用 */
+    flex-direction: column; /* 縦に並べる */
+    justify-content: flex-start; /* 垂直方向の上寄せ */
+    align-items: center; /* 水平方向の中央寄せ */
+    padding-top:20px; /* 上部に余白を追加 */
+    height: 100vh; /* 画面全体の高さ */
+}
+

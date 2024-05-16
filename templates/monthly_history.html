@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>月次残高一覧</h1>
+    <hr />
+    <!--検索機能の追加-->
+    <form method="get" action="{{ url_for('monthly_history') }}">
+        <div class="form-group-serch">
+            <input type="number" name="year" min="2024" max="2100" value="{{ year }}">
+            <label for="year">年</label>
+
+            <input type="number" name="month" min="1" max="12" value="{{ month }}">
+            <label for="month">月</label>
+
+            <label for="account">口座:</label>
+            <input type="text" name="account" value="{{ account }}">
+
+            <input type="submit" value="検索" class="submit submit-serch" />
+        </div>
+    </form>
+
+    <!--テーブル作成-->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>年月</th>
+                <th>口座</th>
+                <th>残高</th>
+                <th>修正</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for detail in monthly_amounts %}
+                <tr>
+                    <td>{{ detail['YearMonth'] }}</td>
+                    <td>{{ detail['AssetType'] }}</td>
+                    <td>{{ detail['MoneyAmount'] }}</td>
+                    <td class="link-cell"><a href="{{ url_for('monthly_update', bm_id=detail['BalanceManagementID']) }}"class="other-button other-button-update">修正</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{url_for('top')}}"class="other-button other-button-top">トップ画面へ</a>
+    <a href="{{url_for('monthly_record')}}"class="other-button other-button-record">月初残高登録</a>
+
+{% endblock %}

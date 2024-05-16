@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>取引履歴一覧</h1>
+    <hr />
+    <!--検索機能の追加-->
+    <form method="get" action="{{ url_for('history') }}">
+        <div class="form-group-serch">
+            <input type="number" name="year" min="2024" max="2100" value="{{ year }}">
+            <label for="year">年</label>
+
+            <input type="number" name="month" min="1" max="12" value="{{ month }}">
+            <label for="month">月</label>
+
+            <label for="account">口座:</label>
+            <input type="text" name="account" value="{{ account }}" list="account_list">
+            <datalist value="account_list">
+                <option value="常陽銀行"></option>
+                <option value="千葉興銀"></option>
+                <option value="政光財布"></option>
+                <option value="梢財布"></option>
+                <option value="コジカ"></option>
+            </datalist>
+            <input type="submit" value="検索" class="submit submit-serch" />
+        </div>
+    </form>
+
+    <!--テーブル作成-->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>日付</th>
+                <th>イベント</th>
+                <th>金額</th>
+                <th>収入/支出</th>
+                <th>取引先</th>
+                <th>カテゴリ</th>
+                <th>取引品目名</th>
+                <th>決済方法</th>
+                <th>口座</th>
+                <th>残高</th>
+                <th>メモ</th>
+                <th>修正</th>
+                <th>削除</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for detail in transaction_details %}
+                <tr>
+                    <td>{{ detail['Date'] }}</td>
+                    <td>{{ detail['Event'] }}</td>
+                    <td>{{ detail['TransactionAmount'] | comma_format }}</td>
+                    <td>{{ detail['Income_OutgoType'] }}</td>
+                    <td>{{ detail['Suppliers'] }}</td>
+                    <td>{{ detail['Category'] }}</td>
+                    <td>{{ detail['TransactionItemName'] }}</td>
+                    <td>{{ detail['PaymentMethod'] }}</td>
+                    <td>{{ detail['AssetType'] }}</td>
+                    <td>{{ detail['RunningBalance'] | comma_format }}</td>
+                    <td>{{ detail['Memo'] }}</td>
+                    <td class="link-cell"><a href="{{ url_for('update', td_id=detail['TransactionID']) }}"class="other-button other-button-update">修正</a></td>
+                    <td class="link-cell"><a href="{{ url_for('delete', td_id=detail['TransactionID']) }}"class="other-button other-button-delete">削除</a></td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!--集計結果の表示-->
+    <div class="summary">
+        <h2>支払い合計: {{ total_payment }}</h2>
+        <h2>収入合計: {{ total_income }}</h2>
+        <h2>収支合計: {{ total_balance }}</h2>
+    </div>
+
+    <a href="{{url_for('top')}}"class="other-button other-button-top">トップ画面へ</a>
+    <a href="{{url_for('record')}}"class="other-button other-button-record">新規登録</a>
+
+{% endblock %}
