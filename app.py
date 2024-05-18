@@ -9,7 +9,8 @@ app.config.from_object("config.Config")
 # DBとFlaskの紐づけ
 from models import db
 db.init_app(app)
-
+#ブランチテスト
+print("ブランチテスト")
 # appコンテキスト内でViewを定義
 with app.app_context():
     metadata = MetaData()
