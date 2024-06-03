@@ -119,6 +119,10 @@ label {
     background-color: #6c757d;
 }
 
+.submit-login {
+    background-color: #535a5f;
+}
+
 /* ホバー時の色を設定 */
 
 .submit-serch:hover {
@@ -135,6 +139,10 @@ label {
 
 .submit-update:hover {
     background-color: #5a6268;
+}
+
+.submit-login:hover {
+    background-color: #3e4447;
 }
 
 /***************************************************/
@@ -238,6 +246,14 @@ label {
     float: right; /* ボタンを右側に配置 */
 }
 
+.other-button-logout {
+    background-color:rgb(39, 39, 39);
+    float: right; /* ボタンを右側に配置 */
+    font-size: 12px;
+    width: auto;
+    height: auto;
+}
+
 .other-button-update {
     background-color: #6c757d; /* グレー */
     padding: 0px 10px; /* パディングを減らして縦方向に小さくする */
@@ -265,6 +281,10 @@ label {
 
 .other-button-record:hover {
     background-color:rgb(190, 87, 2);
+}
+
+.other-button-logout:hover {
+    background-color:rgb(31, 31, 31);
 }
 
 .other-button-update:hover {
