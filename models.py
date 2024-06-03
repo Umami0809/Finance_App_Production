@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -62,3 +64,23 @@ class TransactionItem(db.Model):
     Suppliers = db.Column(db.String(255))
     #カテゴリ
     Category = db.Column(db.String(255))
+
+class Users(UserMixin,db.Model):
+    # ユーザーテーブル
+    __tablename__ = 'users_table'
+    # UserID(PK)
+    UserID = db.Column(db.Integer, primary_key=True)
+    # ユーザー名
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    # パスワード
+    password = db.Column(db.String(120), nullable=False)
+    
+    # パスワードをハッシュ化して設定
+    def set_password(self,password):
+        self.password = generate_password_hash(password)
+    # 入力したパスワードとハッシュ化されたパスワードの比較
+    def check_password(self, password):
+        return check_password_hash(self.password,password)
+    # get_idメソッドをオーバーライド
+    def get_id(self):
+        return str(self.UserID)

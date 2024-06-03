@@ -1,8 +1,11 @@
-from flask import render_template, request, redirect, url_for, abort
+from flask import render_template, request, redirect, url_for, abort, flash
 from app import app,RecordDetailsView
-from models import db,BalanceManagement, FinanceManagement, TransactionDetails, TransactionItem
+from models import db,BalanceManagement, FinanceManagement, TransactionDetails, TransactionItem, Users
 from sqlalchemy import text,desc
 from datetime import datetime,date
+from forms import LoginForm, SignUpForm
+from flask_login import login_user, logout_user, login_required
+
 #===========================================================
 # トランザクション処理関数
 #===========================================================
@@ -30,7 +33,8 @@ app.jinja_env.filters['comma_format'] = format_with_commas
 # ルーティング
 #===========================================================
 # トップぺージ
-@app.route("/")
+@app.route("/top")
+@login_required
 def top():
     return render_template("top.html")
 
@@ -38,6 +42,7 @@ def top():
 # 登録画面
 #===========================================================
 @app.route("/record",methods=["GET","POST"])
+@login_required
 def record():
     # POST時はDB登録
     if request.method == "POST":
@@ -71,10 +76,6 @@ def record():
         # 引数の辞書を作成 {data0:YYYY-MM-DD}の形で辞書を作成
         params = {f'data{i}': item for i, item in enumerate(data)}
         
-        print("YearMonth",YearMonth)
-        print("sql:",sql)
-        print("params",params)
-        
         # text(sql)でプレースホルダー付きの生SQL文を生成し、
         # paramsの辞書データでプレースホルダーに値をバインドし命令実行
         db.session.execute(text(sql), params)
@@ -89,6 +90,7 @@ def record():
 # 現金引出画面
 #===========================================================
 @app.route("/draw",methods=["GET","POST"])
+@login_required
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 関数名    ：cash_draw
 # 機能      ：現金引出操作をした場合に
@@ -149,6 +151,7 @@ def cash_draw():
 # 削除処理
 #===========================================================
 @app.route("/delete/<int:td_id>")
+@login_required
 def delete(td_id):
     delrec1 = TransactionDetails.query.filter_by(TransactionID=td_id).first_or_404()
     delrec2 = FinanceManagement.query.filter_by(FinanceManagementID=delrec1.FinanceManagementID).first_or_404()
@@ -166,6 +169,7 @@ def delete(td_id):
 # 修正画面
 #===========================================================
 @app.route("/update/<int:td_id>",methods=["GET","POST"])
+@login_required
 def update(td_id):
     
     # POSTメソッドの場合
@@ -207,6 +211,7 @@ def update(td_id):
 # 一覧画面
 #===========================================================
 @app.route("/history")
+@login_required
 def history():
     # フォームから年月情報を取得
     year = request.args.get("year",None,type=int)
@@ -273,6 +278,7 @@ def history():
 # 月次残高一覧画面
 #===========================================================
 @app.route("/monthly_history")
+@login_required
 def monthly_history():
     # フォームから年月情報を取得
     year = request.args.get("year",None,type=int)
@@ -308,6 +314,7 @@ def monthly_history():
 # 月次残高修正画面
 #===========================================================
 @app.route("/monthly_update/<int:bm_id>",methods=["GET","POST"])
+@login_required
 def monthly_update(bm_id):
     
     # POSTメソッドの場合
@@ -336,6 +343,7 @@ def monthly_update(bm_id):
 # 月初残高登録画面
 #===========================================================
 @app.route("/monthly_record",methods=["GET","POST"])
+@login_required
 def monthly_record():
     # POST時はDB登録
     if request.method == "POST":
@@ -379,6 +387,7 @@ def monthly_record():
 # 口座残高棚卸画面
 #===========================================================
 @app.route("/inv_balance_record",methods=["GET","POST"])
+@login_required
 def inv_balance_record():
     
     # 最初に本日の日付を取得
@@ -403,9 +412,6 @@ def inv_balance_record():
             balance_value = query.running_balance
         else:
             balance_value = 0
-        
-        print("discription:",balance_value)
-        print("type:",type(balance_value))
         
         # 残高より多ければ収入用データを作成、少なければ支出用でデータを作成
         if now_amount >= balance_value:
@@ -449,4 +455,82 @@ def inv_balance_record():
 
     # GETの場合は日付を引数として登録画面を表示
     return render_template("inv_balance_record.html",today = today)
+    
+#===========================================================
+# ログイン画面（Form使用）
+#===========================================================
+@app.route("/", methods=["GET", "POST"])
+def login():
+    
+    # Formインスタンス生成
+    form = LoginForm()
+    
+    if request.method == "POST":
+        # データ入力取得
+        username = form.username.data
+        password = form.password.data
+    
+        # 対象User取得
+        user = Users.query.filter_by(username=username).first()
+    
+        # 認証判定
+        if user is not None and user.check_password(password):
+            # 成功
+            # 引数として渡されたuserオブジェクトを使用して、ユーザーをログイン状態にする
+            login_user(user)
+            # 画面遷移
+            return redirect(url_for("top"))
+        # 失敗
+        flash("認証不備です")
+    # GET時
+    # 画面遷移
+    return render_template("login_form.html", form=form)
+
+# ログアウト
+@app.route("/logout")
+@login_required
+def logout():
+    # 現在ログインしているユーザーをログアウトする
+    logout_user()
+    # フラッシュメッセージ
+    flash("ログアウトしました")   
+    # 画面遷移
+    return redirect(url_for("login"))
+
+# サインアップ（Form使用）
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    
+    #自分のメールアドレスをホワイトリストへ追加
+    AUTHORIZED_EMAILS = ['kn.ui.101@outlook.jp']
+    
+    # Formインスタンス生成
+    form = SignUpForm()
+    if form.validate_on_submit():
         
+        #アカウント認証
+        email = form.email.data
+        
+        if email in AUTHORIZED_EMAILS:
+        
+            # データ入力取得
+            username = form.username.data
+            password = form.password.data
+            # モデルを生成
+            user = Users(username=username)
+            # パスワードハッシュ化
+            user.set_password(password)
+            # 登録処理
+            db.session.add(user)
+            db.session.commit()
+            # フラッシュメッセージ
+            flash("ユーザー登録しました")  
+            # 画面遷移 
+            return redirect(url_for("login"))
+        
+        #失敗
+        flash("このメールアドレスは使用できません")
+        
+    # GET時
+    # 画面遷移
+    return render_template("register_form.html", form=form)

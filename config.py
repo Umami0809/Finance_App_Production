@@ -9,3 +9,5 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     #DB設定
     SQLALCHEMY_DATABASE_URI = "mysql://admin_FinanceManagement:masa_7610@financemanagement-dbserver.mysql.database.azure.com/financialmanagement"
+    # シークレットキーを設定
+    SECRET_KEY = "my-secret-key"
