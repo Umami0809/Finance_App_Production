@@ -307,3 +307,33 @@ label {
     height: 100vh; /* 画面全体の高さ */
 }
 
+.conteiner {
+    width: 80%;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 600px) {
+    .conteiner{
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+    }
+
+    .navber{
+        display: block;
+        text-align: center;
+    }
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+}
+
+input[type="text"],input[type="password"],input[type="email"] {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}

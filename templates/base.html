@@ -2,11 +2,20 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>家計簿アプリ</title>
         <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
         <script src="{{ url_for('static',filename='js/alerts.js') }}"></script>
     </head>
     <body>
-        {% block content %}{% endblock %}
+        <div class="container">
+            <header class="navbar">
+                <h1>家計簿アプリ</h1>
+            </header>
+            <main>
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
     </body>
 </html>
