@@ -13,7 +13,7 @@
             <label for="month">月</label>
 
             <label for="account">口座:</label>
-            <input type="text" name="account" value="{{ account }}" list="account_list">
+            <input type="text" name="account" value="{{ account }}" list="account_list" class="account-input">
             <datalist value="account_list">
                 <option value="常陽銀行"></option>
                 <option value="千葉興銀"></option>
@@ -26,7 +26,7 @@
     </form>
 
     <!--テーブル作成-->
-    <table border="1">
+    <table class="table-history" border="1">
         <thead>
             <tr>
                 <th>日付</th>
