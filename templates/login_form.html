@@ -15,11 +15,9 @@
         </div>
         {% endfor %}
         <!-- ▲▲▲▲▲ flashメッセージ ▲▲▲▲▲ -->
-        <input type="submit" class="submit-login" value="ログイン">
+        <input type="submit" class="submit-login" name="action" value="ログイン">
+        <input type="submit" class="submit-login-guest" name="action" value="ゲストログイン">
     </form>
-    <p>
-        アカウントをお持ちでない場合は、
-        <a href="{{ url_for('register') }}">こちら</a>
-        から登録してください。
-    </p>
+    <div style="height: 40px;"></div>
+    <p>アカウントをお持ちでない場合は、<a href="{{ url_for('register') }}">こちら</a>から登録するか、ゲストログインボタンを使用ください。</p>
 {% endblock %}

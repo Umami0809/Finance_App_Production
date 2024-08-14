@@ -89,7 +89,7 @@ input[type="submit"] {
 
 /* フォームのスタイル */
 form {
-    max-width: 400px; /*フォームの最大幅*/
+    max-width: 500px; /*フォームの最大幅*/
     margin: 0 auto; /*中央寄せ*/
     display: block; /*ブロックを使用*/
 }
@@ -121,6 +121,13 @@ label {
 
 .submit-login {
     background-color: #535a5f;
+    float: right; /* ボタンを右側に配置 */
+}
+
+.submit-login-guest {
+    background-color: #429b93;
+    float: right; /* ボタンを右側に配置 */
+    margin-right: 10px;
 }
 
 /* ホバー時の色を設定 */
@@ -143,6 +150,10 @@ label {
 
 .submit-login:hover {
     background-color: #3e4447;
+}
+
+.submit-login-guest:hover {
+    background-color: #3d8d86;
 }
 
 /***************************************************/
@@ -315,6 +326,23 @@ label {
 
 /*スマホ画面用の設定*/
   @media screen and (max-width: 600px) {
+    
+    .form-group-serch {
+        display: flex;
+        gap: 0px; /* 縦の間隔を調整 */
+    }
+
+    .form-group-serch input[name="year"] {
+        width: 50%; /* 幅調整 */
+    }
+
+    .form-group-serch input[name="month"] {
+        width: 20%; /* 幅調整 */
+    }
+
+    .form-group-serch input[name="account"] {
+        width: 100%;
+    }
     
     .table-history {
         width: 90%;

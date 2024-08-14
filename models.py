@@ -19,6 +19,8 @@ class BalanceManagement(db.Model):
     AssetType = db.Column(db.String(45))
     #貯金額
     MoneyAmount = db.Column(db.Numeric(10,2))
+    #ユーザーID
+    UserID_bm = db.Column(db.Integer,db.ForeignKey('users_table.UserID'))
     
 class FinanceManagement(db.Model):
     #収支管理テーブル 
@@ -30,6 +32,8 @@ class FinanceManagement(db.Model):
     BalanceManagementID = db.Column(db.Integer, db.ForeignKey('balance_management_table.BalanceManagementID'))
     #取引項目ID(FK)
     TransactionItemID = db.Column(db.Integer,db.ForeignKey('transaction_item_table.TransactionItemID'))
+    #ユーザーID
+    UserID_fm = db.Column(db.Integer,db.ForeignKey('users_table.UserID'))
 
 class TransactionDetails(db.Model):
     #取引詳細テーブル 
@@ -49,6 +53,8 @@ class TransactionDetails(db.Model):
     PaymentMethod = db.Column(db.String(255))
     #備考
     Memo = db.Column(db.String(255))
+    #ユーザーID
+    UserID_td = db.Column(db.Integer,db.ForeignKey('users_table.UserID'))
 
 class TransactionItem(db.Model):
     #取引項目テーブル
@@ -64,6 +70,8 @@ class TransactionItem(db.Model):
     Suppliers = db.Column(db.String(255))
     #カテゴリ
     Category = db.Column(db.String(255))
+    #ユーザーID
+    UserID_ti = db.Column(db.Integer,db.ForeignKey('users_table.UserID'))
 
 class Users(UserMixin,db.Model):
     # ユーザーテーブル
@@ -73,7 +81,9 @@ class Users(UserMixin,db.Model):
     # ユーザー名
     username = db.Column(db.String(50), unique=True, nullable=False)
     # パスワード
-    password = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    # Emailアドレス
+    email = db.Column(db.String(255), nullable=False)
     
     # パスワードをハッシュ化して設定
     def set_password(self,password):

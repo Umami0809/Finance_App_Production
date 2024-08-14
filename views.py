@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, abort, flash
+from flask import render_template, request, redirect, url_for, abort, flash, session
 from app import app,RecordDetailsView
 from models import db,BalanceManagement, FinanceManagement, TransactionDetails, TransactionItem, Users
 from sqlalchemy import text,desc
@@ -51,6 +51,7 @@ def record():
         datestr = request.form["Date"]
         dateobj = datetime.strptime(datestr,"%Y-%m-%d")
         YearMonth = dateobj.strftime("%Y%m")
+        userid = session['user_id'] # ssessionからログイン中のユーザーIDを取得
         
         # 登録フォームの入力内容を取得
         data = (
@@ -64,7 +65,8 @@ def record():
             request.form["Suppliers"],
             request.form["Category"],
             YearMonth,
-            request.form["AssetType"]
+            request.form["AssetType"],
+            userid
             )
         
         # ストアドプロシージャ名を変数へ格納
@@ -104,6 +106,7 @@ def cash_draw():
         datestr = request.form["Date"]
         dateobj = datetime.strptime(datestr,"%Y-%m-%d")
         yyyymmstr = dateobj.strftime("%Y%m")
+        userid = session['user_id'] # sessionからログイン中のユーザーIDを取得
         
         # リクエストからタプルへデータを取得
         data = (
@@ -117,17 +120,20 @@ def cash_draw():
             request.form["Draw_Destination"],   #data7:Suppliers
             "現金移動",             #data8:Category
             yyyymmstr,              #data9:YearMonth
-            request.form["Draw_Sauce"]  #data10:AssetType
+            request.form["Draw_Sauce"],  #data10:AssetType
+            userid                  #data11:UserID
         )
         # ストアドプロシージャを使用し引出元のレコードを作成
         proc_name = "FM_Schema_AddData"
         
         # [:data(i)]でプレースホルダーを設置
         sql = f"CALL {proc_name}({', '.join([':data' + str(i) for i in range(len(data))])})"
-        # sql = "CALL FM_Schema_AddData :data0,:data1,:data2,:data3…":○○がプレースホルダー
+        # sql = "CALL FM_Schema_AddData(:data0,:data1,:data2,:data3…)":data〇がプレースホルダー
         
         # 引数の辞書を作成 {data0:YYYY-MM-DD}の形で辞書を作成
         params = {f'data{i}': item for i, item in enumerate(data)}
+        # enumerateでリスト(data)内のインデックスと要素をiとitemへ格納
+        # data1:買い物 等
 
         # text(sql)でプレースホルダー付きの生SQL文を生成し、
         # paramsの辞書データでプレースホルダーに値をバインドし命令実行
@@ -217,15 +223,26 @@ def history():
     year = request.args.get("year",None,type=int)
     month = request.args.get("month",None,type=int)
     account = request.args.get("account","")
+    userid = session['user_id']
+    current_year = datetime.now().year
+    current_month = datetime.now().month
 
     # 取引履歴表示用のクエリを設定
-    query = db.session.query(RecordDetailsView)
+    query = db.session.query(RecordDetailsView).filter(RecordDetailsView.c.UserID == userid)
 
     # 検索情報が指定されている場合、クエリにフィルタを追加
-    if year:
-        query = query.filter(db.extract("year", RecordDetailsView.c.Date) == year)
-    if month:
-        query = query.filter(db.extract("month", RecordDetailsView.c.Date) == month)
+    if year and month:
+        query = query.filter(db.extract("year",RecordDetailsView.c.Date) == year)
+        query = query.filter(db.extract("month",RecordDetailsView.c.Date) == month)
+    elif year and not month:
+        query = query.filter(db.extract("year",RecordDetailsView.c.Date) == year)
+    elif not year and month:
+        query = query.filter(db.extract("year",RecordDetailsView.c.Date) == current_year)
+        query = query.filter(db.extract("month",RecordDetailsView.c.Date) == month)
+    else:
+        query = query.filter(db.extract("year",RecordDetailsView.c.Date) == current_year)
+        query = query.filter(db.extract("month",RecordDetailsView.c.Date) == current_month)
+
     if account:        
         query = query.filter(RecordDetailsView.c.AssetType == account)
         
@@ -236,7 +253,7 @@ def history():
 
     # リストのままだと引数受渡でエラーとなる為アンパックして辞書にパッキング
     packed_data = []
-    for date, event, transaction_amount, income_outgo_type, suppliers, category, transaction_item_name, payment_method, asset_type, money_amount, running_balance,memo,td_id,fm_id,bm_id,ti_id in result:
+    for date, event, transaction_amount, income_outgo_type, suppliers, category, transaction_item_name, payment_method, asset_type, money_amount, running_balance,memo,td_id,fm_id,ti_id,bm_id,fm_userid in result:
         record = {
             'Date': date,
             'Event': event,
@@ -252,8 +269,9 @@ def history():
             'Memo' : memo,
             'TransactionID' : td_id,
             'FinanceManagementID' : fm_id,
+            'TransactionItemID' : ti_id,
             'BalanceManagementID' : bm_id,
-            'TransactionItemID' : ti_id
+            'UserID' : fm_userid
         }
         packed_data.append(record)
         
@@ -284,9 +302,10 @@ def monthly_history():
     year = request.args.get("year",None,type=int)
     month = request.args.get("month",None,type=int)
     account = request.args.get("account","")
+    userid = session['user_id'] # sessionからログイン中のユーザーIDを取得
     
-    # 月次残高テーブルの全件取得クエリを設定
-    query = db.session.query(BalanceManagement)
+    # ユーザー毎の月次残高テーブル全件取得クエリを設定
+    query = db.session.query(BalanceManagement).filter(BalanceManagement.UserID_bm == userid)
     
     # 検索情報が指定されている場合、クエリにフィルタを追加
     if year:
@@ -355,11 +374,13 @@ def monthly_record():
         yearmonth = data["YearMonth"]
         assettype = data["AssetType"]
         moneyamount = int(data["MoneyAmount"])
+        userid = session['user_id'] # sessionからログイン中のユーザーIDを取得
         
         # 同年同月同口座の登録レコードがあるか検索
         exists_record = db.session.query(BalanceManagement).filter(
             BalanceManagement.YearMonth == yearmonth,
-            BalanceManagement.AssetType == assettype
+            BalanceManagement.AssetType == assettype,
+            BalanceManagement.UserID_bm == userid
         ).first()
         
         if exists_record:
@@ -369,7 +390,8 @@ def monthly_record():
             new_record = BalanceManagement(
                 YearMonth = yearmonth,
                 AssetType = assettype,
-                MoneyAmount = moneyamount
+                MoneyAmount = moneyamount,
+                UserID_bm = userid
                 )
             
             # セッションに新しいレコードを追加
@@ -400,10 +422,11 @@ def inv_balance_record():
         yearmonth = today.strftime("%Y%m")  # `YYYYMM`の形にフォーマット
         assettype = request.form["AssetType"]
         now_amount = int(request.form["NowAmount"])
+        userid = session['user_id'] # sessionからログイン中のユーザーIDを取得
     
         # 現在の残高情報を抽出
         query = db.session.query(RecordDetailsView.c.running_balance)\
-            .filter(RecordDetailsView.c.AssetType == assettype)\
+            .filter(RecordDetailsView.c.AssetType == assettype,RecordDetailsView.c.UserID == userid)\
                 .order_by(desc(RecordDetailsView.c.Date),desc(RecordDetailsView.c.TransactionID)).first()
         
         # レコードが存在しなければ残高を0として計算
@@ -435,7 +458,8 @@ def inv_balance_record():
             "-",                    #data7:Suppliers
             category,               #data8:Category
             yearmonth,              #data9:YearMonth
-            assettype               #data10:AssetType
+            assettype,              #data10:AssetType
+            userid                  #data11:UserID
             )
 
         # ストアドプロシージャを使用しレコードを作成
@@ -466,22 +490,42 @@ def login():
     form = LoginForm()
     
     if request.method == "POST":
-        # データ入力取得
-        username = form.username.data
-        password = form.password.data
-    
-        # 対象User取得
-        user = Users.query.filter_by(username=username).first()
-    
-        # 認証判定
-        if user is not None and user.check_password(password):
-            # 成功
-            # 引数として渡されたuserオブジェクトを使用して、ユーザーをログイン状態にする
-            login_user(user)
-            # 画面遷移
-            return redirect(url_for("top"))
-        # 失敗
-        flash("認証不備です")
+        
+        #どのボタンを押したのか判定
+        action = request.form.get("action")
+        
+        #ゲストログイン時の処理
+        if action == "ゲストログイン":
+            #guestユーザーのレコードを格納
+            guest_user = Users.query.filter_by(username="guest").first()
+        
+            #ゲストユーザーが見つかったらログイン
+            if guest_user is not None:
+                login_user(guest_user)
+                session['user_id']=guest_user.UserID # ゲストユーザーのユーザーIDをセッションへ格納
+                return redirect(url_for("top"))
+            else: #見つからなかったらアナウンス
+                flash("ゲストユーザーが見つかりません")
+                
+        else: # 通常ログイン時の処理
+            # データ入力取得
+            username = form.username.data
+            password = form.password.data
+        
+            # 対象User取得
+            user = Users.query.filter_by(username=username).first()
+        
+            # 認証判定
+            if user is not None and user.check_password(password):
+                # 成功
+                # 引数として渡されたuserオブジェクトを使用して、ユーザーをログイン状態にする
+                login_user(user)
+                session['user_id']=user.UserID # ユーザーIDをセッションへ格納
+                # 画面遷移
+                return redirect(url_for("top"))
+            # 失敗
+            flash("認証不備です")
+            
     # GET時
     # 画面遷移
     return render_template("login_form.html", form=form)
@@ -492,6 +536,8 @@ def login():
 def logout():
     # 現在ログインしているユーザーをログアウトする
     logout_user()
+    # セッション情報をクリアする
+    session.clear()
     # フラッシュメッセージ
     flash("ログアウトしました")   
     # 画面遷移
